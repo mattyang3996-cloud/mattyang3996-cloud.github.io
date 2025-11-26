@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>广东2026年省考议论文写作深度解析 (Guangdong 2026 Essay Guide)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans SC', sans-serif; background-color: #fcfbf9; color: #1f2937; }
+        .serif { font-family: 'Noto Serif SC', serif; }
+        .tab-active { border-bottom: 2px solid #b45309; color: #78350f; font-weight: 700; }
+        .card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); }
+        .chart-container { position: relative; width: 100%; max-width: 500px; margin: 0 auto; height: 300px; }
+        .interactive-block:hover { transform: translateY(-2px); transition: all 0.2s ease; }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+    </style>
+    <!-- Chosen Palette: Warm Scholar (Cream background #fcfbf9, Deep Brown text #1f2937, Amber accents #b45309, Paper White cards) -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: Sets the context for the 2026 Guangdong Exam.
+         2. Interactive Dashboard (SPA Core): 
+            - Sidebar/Top Nav: Navigates between "Thinking Logic", "Structure Blueprint", "Material Integration", and "Scoring Radar".
+            - Main View: Dynamic content area that changes based on selection.
+         3. Modules:
+            - Scoring Radar: Visualizes what graders look for (Viewpoint, Logic, Structure, Language).
+            - Structure Builder: Interactive "Five-Paragraph" model. Clicking sections reveals templates/rules.
+            - Material Decoder: A "Before & After" interactive comparison for processing source materials.
+         4. Rationale: Exam preparation requires shifting between high-level strategy (Logic) and concrete execution (Format). This structure allows linear learning or targeted review. 
+    -->
+    <!-- Visualization & Content Choices:
+         - Radar Chart: To show the multi-dimensional grading criteria. (Goal: Inform/Prioritize)
+         - Pie Chart: Time management breakdown during the exam. (Goal: Inform)
+         - Interactive Block Diagram: For the essay structure (Intro, Body, Conclusion). (Goal: Organize/Teach)
+         - Comparison Cards: For "Material Integration" to show raw text vs. processed arguments. (Goal: Compare/Teach)
+         - Confirming NO SVG/Mermaid. Using Chart.js and Tailwind Grid/Flex.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-amber-700 rounded text-white flex items-center justify-center font-bold serif">粤</div>
+                <h1 class="text-xl font-bold text-stone-800 tracking-tight">广东2026年省考 · 申论议论文深度指南</h1>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-active py-2 px-1 text-sm transition-colors">全景看板</button>
+                <button onclick="switchTab('logic')" id="nav-logic" class="text-stone-500 hover:text-stone-800 py-2 px-1 text-sm transition-colors">写作思路</button>
+                <button onclick="switchTab('structure')" id="nav-structure" class="text-stone-500 hover:text-stone-800 py-2 px-1 text-sm transition-colors">结构与格式</button>
+                <button onclick="switchTab('material')" id="nav-material" class="text-stone-500 hover:text-stone-800 py-2 px-1 text-sm transition-colors">结合材料技巧</button>
+            </nav>
+            <!-- Mobile Menu Button (Simplified for this demo) -->
+            <button class="md:hidden text-stone-500" onclick="alert('请在桌面端获得最佳体验')">☰</button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- Intro Text -->
+        <div class="mb-8 text-center max-w-3xl mx-auto">
+            <h2 class="text-3xl font-bold text-stone-900 serif mb-4">策论文的“破局”之道</h2>
+            <p class="text-stone-600 leading-relaxed">
+                针对2026年广东省考，议论文（大作文）不再仅仅是辞藻的堆砌，而是对考生<strong>政治站位、逻辑思维、材料处理</strong>能力的综合考察。本应用将深度拆解高分作文的底层逻辑，帮助您从“怕写”转变为“会写”。请通过下方导航探索不同模块。
+            </p>
+        </div>
+
+        <!-- DASHBOARD VIEW -->
+        <section id="view-dashboard" class="space-y-8">
+            <!-- Stats Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Chart 1: Scoring Dimensions -->
+                <div class="bg-white p-6 rounded-xl card-shadow border border-stone-100">
+                    <div class="mb-4">
+                        <h3 class="text-lg font-bold text-stone-800 flex items-center">
+                            <span class="w-1 h-6 bg-amber-600 mr-2 rounded-full"></span>
+                            阅卷评分五维雷达
+                        </h3>
+                        <p class="text-sm text-stone-500 mt-1">广东申论阅卷核心关注点权重分析</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                    <div class="mt-4 p-4 bg-amber-50 rounded-lg text-sm text-amber-900">
+                        <strong>关键洞察：</strong> “观点明确”与“结合材料”是及格线，而“论证逻辑”与“政治高度”是高分的决胜点。广东卷特别看重务实解决问题的能力。
+                    </div>
+                </div>
+
+                <!-- Chart 2: Time Management -->
+                <div class="bg-white p-6 rounded-xl card-shadow border border-stone-100">
+                    <div class="mb-4">
+                        <h3 class="text-lg font-bold text-stone-800 flex items-center">
+                            <span class="w-1 h-6 bg-blue-600 mr-2 rounded-full"></span>
+                            考场黄金时间分配 (总计: ~60分钟)
+                        </h3>
+                        <p class="text-sm text-stone-500 mt-1">建议议论文部分预留时间分布</p>
+                    </div>
+                    <div class="chart-container flex justify-center">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-2 text-sm">
+                        <div class="flex items-center"><span class="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>审题立意 (10%)</div>
+                        <div class="flex items-center"><span class="w-3 h-3 bg-amber-500 rounded-full mr-2"></span>列提纲 (15%)</div>
+                        <div class="flex items-center"><span class="w-3 h-3 bg-emerald-500 rounded-full mr-2"></span>正文书写 (70%)</div>
+                        <div class="flex items-center"><span class="w-3 h-3 bg-stone-400 rounded-full mr-2"></span>检查修正 (5%)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <button onclick="switchTab('logic')" class="bg-white p-6 rounded-xl card-shadow border border-stone-100 hover:border-amber-400 transition-all text-left group">
+                    <div class="text-3xl mb-3">🧠</div>
+                    <h4 class="font-bold text-stone-800 group-hover:text-amber-700">构建写作思路</h4>
+                    <p class="text-sm text-stone-500 mt-2">如何从材料中提炼总论点？如何拆解分论点？点击深入学习。</p>
+                </button>
+                <button onclick="switchTab('structure')" class="bg-white p-6 rounded-xl card-shadow border border-stone-100 hover:border-amber-400 transition-all text-left group">
+                    <div class="text-3xl mb-3">🏗️</div>
+                    <h4 class="font-bold text-stone-800 group-hover:text-amber-700">掌握标准格式</h4>
+                    <p class="text-sm text-stone-500 mt-2">五段三分式结构详解，标题、开头、结尾的万能公式。</p>
+                </button>
+                <button onclick="switchTab('material')" class="bg-white p-6 rounded-xl card-shadow border border-stone-100 hover:border-amber-400 transition-all text-left group">
+                    <div class="text-3xl mb-3">🔍</div>
+                    <h4 class="font-bold text-stone-800 group-hover:text-amber-700">深度结合材料</h4>
+                    <p class="text-sm text-stone-500 mt-2">拒绝大段抄袭。学习如何“抄”得高级，如何从材料中“找”论据。</p>
+                </button>
+            </div>
+        </section>
+
+        <!-- LOGIC VIEW -->
+        <section id="view-logic" class="hidden space-y-6">
+            <div class="bg-white p-8 rounded-xl card-shadow">
+                <h3 class="text-2xl font-bold text-stone-800 mb-6 serif border-b pb-4">写作思路：从审题到成文</h3>
+                <p class="mb-6 text-stone-600">广东省考议论文的核心在于<strong>“紧扣题意，政治正确，逻辑闭环”</strong>。以下是标准的思维路径：</p>
+                
+                <!-- Interactive Stepper -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center relative mb-12">
+                    <div class="absolute top-1/2 left-0 w-full h-1 bg-stone-200 -z-10 hidden md:block"></div>
+                    
+                    <!-- Step 1 -->
+                    <div class="step-item relative bg-white p-2 cursor-pointer group" onclick="showLogicDetail(1)">
+                        <div class="w-12 h-12 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold mx-auto z-10 group-hover:scale-110 transition-transform">1</div>
+                        <div class="text-center mt-2 font-bold text-stone-700">审题意</div>
+                        <div class="text-xs text-center text-stone-500">定位题眼</div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="step-item relative bg-white p-2 cursor-pointer group" onclick="showLogicDetail(2)">
+                        <div class="w-12 h-12 bg-stone-200 text-stone-600 rounded-full flex items-center justify-center font-bold mx-auto z-10 group-hover:bg-amber-200 transition-colors">2</div>
+                        <div class="text-center mt-2 font-bold text-stone-700">理材料</div>
+                        <div class="text-xs text-center text-stone-500">梳理逻辑</div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="step-item relative bg-white p-2 cursor-pointer group" onclick="showLogicDetail(3)">
+                        <div class="w-12 h-12 bg-stone-200 text-stone-600 rounded-full flex items-center justify-center font-bold mx-auto z-10 group-hover:bg-amber-200 transition-colors">3</div>
+                        <div class="text-center mt-2 font-bold text-stone-700">定论点</div>
+                        <div class="text-xs text-center text-stone-500">总分结构</div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="step-item relative bg-white p-2 cursor-pointer group" onclick="showLogicDetail(4)">
+                        <div class="w-12 h-12 bg-stone-200 text-stone-600 rounded-full flex items-center justify-center font-bold mx-auto z-10 group-hover:bg-amber-200 transition-colors">4</div>
+                        <div class="text-center mt-2 font-bold text-stone-700">充血肉</div>
+                        <div class="text-xs text-center text-stone-500">论证方法</div>
+                    </div>
+                </div>
+
+                <!-- Logic Detail Content Area -->
+                <div id="logic-detail-content" class="bg-stone-50 p-6 rounded-lg border-l-4 border-amber-600 animate-fade-in">
+                    <h4 class="text-xl font-bold text-amber-800 mb-2">第1步：审题意 (定位题眼)</h4>
+                    <ul class="list-disc list-inside space-y-2 text-stone-700">
+                        <li><strong>审文种：</strong> 是策论文（重对策）还是政论文（重分析）？广东卷近年多为<strong>策论文</strong>，强调解决实际问题。</li>
+                        <li><strong>审对象：</strong> 题目要求围绕什么主题？（如“高质量发展”、“乡村振兴”）。</li>
+                        <li><strong>审问数：</strong> 有几个具体要求？是否要求“结合给定材料”？</li>
+                        <li><strong>技巧：</strong> 圈出题干中的关键词，这往往就是总论点的核心词汇。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- STRUCTURE VIEW -->
+        <section id="view-structure" class="hidden space-y-6">
+            <div class="bg-white p-8 rounded-xl card-shadow">
+                <h3 class="text-2xl font-bold text-stone-800 mb-2 serif">结构与格式：五段三分式</h3>
+                <p class="text-stone-500 mb-8">点击下方的方块，查看每一部分的详细写作要求和模板。</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Visual Structure Builder -->
+                    <div class="lg:col-span-5 space-y-3">
+                        <div onclick="updateStructureInfo('title')" class="interactive-block p-4 bg-stone-800 text-white rounded text-center cursor-pointer font-bold border-2 border-transparent hover:border-amber-500">
+                            标题 (Title)
+                        </div>
+                        <div onclick="updateStructureInfo('intro')" class="interactive-block p-6 bg-stone-100 text-stone-700 rounded text-center cursor-pointer hover:bg-stone-200 border-2 border-transparent hover:border-amber-500">
+                            第一段：开头 (Introduction)
+                        </div>
+                        <div onclick="updateStructureInfo('body1')" class="interactive-block p-8 bg-amber-50 text-amber-900 rounded text-center cursor-pointer hover:bg-amber-100 border-2 border-transparent hover:border-amber-500">
+                            第二段：分论点一 (Argument 1)
+                        </div>
+                        <div onclick="updateStructureInfo('body2')" class="interactive-block p-8 bg-amber-50 text-amber-900 rounded text-center cursor-pointer hover:bg-amber-100 border-2 border-transparent hover:border-amber-500">
+                            第三段：分论点二 (Argument 2)
+                        </div>
+                        <div onclick="updateStructureInfo('body3')" class="interactive-block p-8 bg-amber-50 text-amber-900 rounded text-center cursor-pointer hover:bg-amber-100 border-2 border-transparent hover:border-amber-500">
+                            第四段：分论点三 (Argument 3)
+                        </div>
+                        <div onclick="updateStructureInfo('conclusion')" class="interactive-block p-5 bg-stone-100 text-stone-700 rounded text-center cursor-pointer hover:bg-stone-200 border-2 border-transparent hover:border-amber-500">
+                            第五段：结尾 (Conclusion)
+                        </div>
+                    </div>
+
+                    <!-- Detailed Info Panel -->
+                    <div class="lg:col-span-7">
+                        <div id="structure-info-panel" class="h-full bg-white border border-stone-200 rounded-xl p-6 relative">
+                            <span class="absolute top-4 right-4 text-6xl text-stone-100 font-serif select-none -z-0">¶</span>
+                            <div id="structure-content" class="relative z-10">
+                                <h4 class="text-xl font-bold text-stone-800 mb-4">请点击左侧结构块</h4>
+                                <p class="text-stone-600">查看各部分的字数建议、写作逻辑及万能模板。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MATERIAL VIEW -->
+        <section id="view-material" class="hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Introduction -->
+                <div class="col-span-1 md:col-span-2 bg-amber-50 p-6 rounded-xl border border-amber-100">
+                    <h3 class="text-xl font-bold text-amber-900 mb-2">如何结合材料？ (Deep Integration)</h3>
+                    <p class="text-amber-800 text-sm">
+                        阅卷老师最忌讳“脱离材料”空谈，也忌讳“大段抄袭”。
+                        <strong>黄金法则：</strong> 论点来自材料，论据概括材料，论证超越材料。
+                    </p>
+                </div>
+
+                <!-- Method Card 1: Extraction -->
+                <div class="bg-white p-6 rounded-xl card-shadow">
+                    <h4 class="font-bold text-lg mb-4 text-stone-800 border-b pb-2">技巧一：关键词转化法</h4>
+                    <div class="space-y-4">
+                        <div class="bg-red-50 p-3 rounded text-sm text-red-800">
+                            <span class="font-bold block mb-1">❌ 错误示范 (照搬):</span>
+                            “材料中提到，我们要大力发展数字经济，建设智慧城市，推动产业升级，还要培养很多高科技人才...”
+                        </div>
+                        <div class="flex justify-center text-stone-400">↓ 转化 ↓</div>
+                        <div class="bg-green-50 p-3 rounded text-sm text-green-800">
+                            <span class="font-bold block mb-1">✅ 正确示范 (提炼):</span>
+                            “我们要以<strong>数字赋能</strong>为引擎，通过<strong>产业智慧化</strong>转型，构建人才与技术双轮驱动的发展新格局。”
+                        </div>
+                    </div>
+                    <p class="mt-4 text-xs text-stone-500 italic">点拨：将口语化的材料语言转化为政策性、理论性的规范表达。</p>
+                </div>
+
+                <!-- Method Card 2: Example Utilization -->
+                <div class="bg-white p-6 rounded-xl card-shadow">
+                    <h4 class="font-bold text-lg mb-4 text-stone-800 border-b pb-2">技巧二：论据缩写法</h4>
+                    <div class="space-y-4">
+                        <div class="bg-stone-100 p-3 rounded text-sm text-stone-600">
+                            <span class="font-bold block mb-1">📄 原材料 (300字):</span>
+                            讲述了小李回乡创业，一开始很困难，后来在政府帮助下申请了无息贷款，又参加了电商培训，最后把家乡的橙子卖到了全国各地，带动了全村致富...
+                        </div>
+                        <div class="flex justify-center text-stone-400">↓ 缩写 ↓</div>
+                        <div class="bg-green-50 p-3 rounded text-sm text-green-800">
+                            <span class="font-bold block mb-1">✅ 论据化 (50字):</span>
+                            “正如回乡创业青年小李，借力政府金融扶持与技能培训，以电商模式打通农产品销路，实现了个人价值与乡村振兴的同频共振。”
+                        </div>
+                    </div>
+                    <p class="mt-4 text-xs text-stone-500 italic">点拨：保留主语、核心做法、最终成效。去掉细节描写。</p>
+                </div>
+
+                <!-- Interactive Exercise -->
+                <div class="col-span-1 md:col-span-2 bg-white p-6 rounded-xl card-shadow">
+                    <h4 class="font-bold text-lg mb-4 text-stone-800">实战演练：材料分析</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-bold text-stone-700 mb-2">材料片段</label>
+                            <div class="p-4 bg-stone-100 rounded text-sm text-stone-600 leading-relaxed h-32 overflow-y-auto">
+                                “某市为了改善营商环境，简化了审批流程，以前办一个证要跑好几个部门，盖十几个章，现在只要在一个窗口就能办好。同时，还建立了网上办事大厅，数据多跑路，群众少跑腿。企业对此纷纷点赞。”
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-bold text-stone-700 mb-2">提炼分论点 (点击查看)</label>
+                            <button onclick="toggleAnswer()" class="bg-amber-600 text-white px-4 py-2 rounded hover:bg-amber-700 transition w-full mb-2">显示参考分论点</button>
+                            <div id="material-answer" class="hidden p-4 bg-amber-50 rounded border border-amber-200 text-amber-900 text-sm h-32 flex items-center justify-center font-bold text-center">
+                                优化营商环境，关键在于简政放权与数字赋能，实现政务服务提质增效。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // State Management
+        const state = {
+            currentTab: 'dashboard'
+        };
+
+        // Data Models
+        const structureData = {
+            title: {
+                title: "标题 (Title)",
+                words: "1行",
+                content: "<strong>原则：</strong> 简明扼要，体现总论点。<br><strong>公式：</strong> <br>1. 主题 + 之道/之路/之钥 (如：<em>走好高质量发展之路</em>)<br>2. 动宾式 (如：<em>提振干事创业精气神</em>)<br>3. 对仗式 (如：<em>不仅要'面子'靓，更要'里子'实</em>)"
+            },
+            intro: {
+                title: "第一段：开头 (Introduction)",
+                words: "150字左右",
+                content: "<strong>目标：</strong> 引出话题 + 亮明观点。<br><strong>模板：</strong> <br>“...（社会现象/背景）。然而...（指出问题/机遇）。因此，唯有...（总论点），方能...（意义）。”<br><strong>技巧：</strong> 引用名言（习近平语录）能瞬间提升档次。"
+            },
+            body1: {
+                title: "第二段：分论点一 (Argument 1)",
+                words: "250-300字",
+                content: "<strong>结构：</strong> <br>1. <strong>分论点句：</strong> 放在段首，单独成句。<br>2. <strong>过渡分析：</strong> 解释分论点为何重要（道理论证）。<br>3. <strong>举例论证：</strong> 结合材料或自身积累的案例。<br>4. <strong>回扣分析：</strong> 总结案例，再次强调分论点。"
+            },
+            body2: {
+                title: "第三段：分论点二 (Argument 2)",
+                words: "250-300字",
+                content: "<strong>逻辑关系：</strong> 分论点之间通常是并列关系或递进关系。<br><strong>内容重点：</strong> 如果分论点一是“思想层面”，分论点二可以是“制度层面”或“行动层面”。<br><strong>注意：</strong> 保持句式与上一段大致整齐，形成排比气势。"
+            },
+            body3: {
+                title: "第四段：分论点三 (Argument 3)",
+                words: "250-300字",
+                content: "<strong>深度挖掘：</strong> 最后一个分论点往往需要升华，比如从“个人/企业”上升到“国家/民族”高度。<br><strong>备选策略：</strong> 如果只有两个核心对策，这一段可以用作“驳论”或“补充论证”，或者写成过渡段（不建议新手尝试，建议保持3个分论点）。"
+            },
+            conclusion: {
+                title: "第五段：结尾 (Conclusion)",
+                words: "150字左右",
+                content: "<strong>目标：</strong> 总结全文 + 升华主题 + 展望未来。<br><strong>禁忌：</strong> 烂尾、口号空洞。<br><strong>模板：</strong> <br>“综上所述...（重申总论点）。...（回扣分论点）。让我们...（呼吁行动），共同谱写...新篇章！”"
+            }
+        };
+
+        const logicSteps = [
+            {
+                id: 1,
+                title: "第1步：审题意 (定位题眼)",
+                content: "<ul class='list-disc list-inside space-y-2 text-stone-700'><li><strong>审文种：</strong> 是策论文（重对策）还是政论文（重分析）？广东卷近年多为<strong>策论文</strong>，强调解决实际问题。</li><li><strong>审对象：</strong> 题目要求围绕什么主题？（如“高质量发展”、“乡村振兴”）。</li><li><strong>审问数：</strong> 有几个具体要求？是否要求“结合给定材料”？</li><li><strong>技巧：</strong> 圈出题干中的关键词，这往往就是总论点的核心词汇。</li></ul>"
+            },
+            {
+                id: 2,
+                title: "第2步：理材料 (梳理逻辑)",
+                content: "<ul class='list-disc list-inside space-y-2 text-stone-700'><li><strong>全篇速读：</strong> 每一则材料通常对应一个问题表现、原因或对策。</li><li><strong>分类归纳：</strong> 比如材料1-3是讲“问题”，材料4-5是讲“外地经验”，材料6是“本地政策”。</li><li><strong>找对策词：</strong> 重点关注材料中的动词（建立、完善、推进、加强），这些直接可以转化为分论点。</li></ul>"
+            },
+            {
+                id: 3,
+                title: "第3步：定论点 (总分结构)",
+                content: "<ul class='list-disc list-inside space-y-2 text-stone-700'><li><strong>总论点：</strong> 必须包含题干关键词，且是一句完整的判断句。</li><li><strong>分论点来源：</strong> <br>1. <strong>根据材料推导：</strong> 材料讲了三个方面，就提三个分论点。<br>2. <strong>万能维度：</strong> 制度、人才、技术、文化、监管。<br>3. <strong>逻辑维度：</strong> 认识（思想）- 实践（行动）- 保障（机制）。</li></ul>"
+            },
+            {
+                id: 4,
+                title: "第4步：充血肉 (论证方法)",
+                content: "<ul class='list-disc list-inside space-y-2 text-stone-700'><li><strong>例证法：</strong> 使用材料中的例子（需缩写）或社会热点。</li><li><strong>理证法：</strong> 分析原因、影响、必要性。</li><li><strong>引证法：</strong> 引用习近平总书记讲话、古诗词。</li><li><strong>排比法：</strong> 增强气势。</li></ul>"
+            }
+        ];
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            initRadarChart();
+            initPieChart();
+            // Default load
+            updateStructureInfo('title'); 
+        });
+
+        // Navigation Function
+        function switchTab(tabId) {
+            // Update State
+            state.currentTab = tabId;
+            
+            // UI Updates
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('tab-active', 'text-stone-800');
+                btn.classList.add('text-stone-500');
+            });
+            document.getElementById(`nav-${tabId}`).classList.add('tab-active');
+            document.getElementById(`nav-${tabId}`).classList.remove('text-stone-500');
+
+            // View Updates
+            ['dashboard', 'logic', 'structure', 'material'].forEach(view => {
+                const el = document.getElementById(`view-${view}`);
+                if (view === tabId) {
+                    el.classList.remove('hidden');
+                    // Simple animation
+                    el.classList.add('animate-fade-in');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+        }
+
+        // Structure Info Updater
+        function updateStructureInfo(key) {
+            const data = structureData[key];
+            const panel = document.getElementById('structure-content');
+            
+            // Highlight active block
+            // (In a full React app, this would be state-driven styles. Here we rely on content update)
+            
+            panel.innerHTML = `
+                <div class="animate-fade-in">
+                    <h4 class="text-xl font-bold text-amber-800 mb-2">${data.title}</h4>
+                    <span class="inline-block bg-stone-100 text-stone-500 text-xs px-2 py-1 rounded mb-4">建议篇幅：${data.words}</span>
+                    <div class="text-stone-700 leading-relaxed space-y-2">${data.content}</div>
+                </div>
+            `;
+        }
+
+        // Logic Step Updater
+        function showLogicDetail(id) {
+            const step = logicSteps.find(s => s.id === id);
+            const contentDiv = document.getElementById('logic-detail-content');
+            
+            // Update visual active state of circles
+            document.querySelectorAll('.step-item > div:first-child').forEach((el, index) => {
+                if (index + 1 === id) {
+                    el.classList.remove('bg-stone-200', 'text-stone-600');
+                    el.classList.add('bg-amber-600', 'text-white');
+                } else {
+                    el.classList.add('bg-stone-200', 'text-stone-600');
+                    el.classList.remove('bg-amber-600', 'text-white');
+                }
+            });
+
+            contentDiv.innerHTML = `
+                <h4 class="text-xl font-bold text-amber-800 mb-2">${step.title}</h4>
+                ${step.content}
+            `;
+        }
+
+        // Material Toggle
+        function toggleAnswer() {
+            const el = document.getElementById('material-answer');
+            el.classList.toggle('hidden');
+        }
+
+        // Chart Initialization
+        function initRadarChart() {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['观点明确性', '论证逻辑性', '结合材料度', '结构完整性', '语言规范性', '政治高度'],
+                    datasets: [{
+                        label: '高分卷画像',
+                        data: [9, 8.5, 8, 9, 7.5, 8.5],
+                        fill: true,
+                        backgroundColor: 'rgba(180, 83, 9, 0.2)',
+                        borderColor: 'rgb(180, 83, 9)',
+                        pointBackgroundColor: 'rgb(180, 83, 9)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(180, 83, 9)'
+                    }, {
+                        label: '平均卷画像',
+                        data: [7, 5, 5, 8, 6, 4],
+                        fill: true,
+                        backgroundColor: 'rgba(120, 113, 108, 0.2)',
+                        borderColor: 'rgb(120, 113, 108)',
+                        pointBackgroundColor: 'rgb(120, 113, 108)',
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 0,
+                            suggestedMax: 10
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        function initPieChart() {
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['审题立意 (6-8min)', '列提纲 (10min)', '正文书写 (40min)', '检查修正 (2-4min)'],
+                    datasets: [{
+                        data: [10, 15, 70, 5],
+                        backgroundColor: [
+                            'rgb(59, 130, 246)', // Blue
+                            'rgb(245, 158, 11)', // Amber
+                            'rgb(16, 185, 129)', // Emerald
+                            'rgb(168, 162, 158)' // Stone
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false } // Hide standard legend to use custom HTML one
+                    }
+                }
+            });
+        }
+
+    </script>
+    
+    <style>
+        /* Embedded CSS for simple animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+</body>
+</html>
